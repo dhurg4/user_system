@@ -28,21 +28,25 @@ bool password_checker(char* password)
         {
             cap_count++;
         }
+        if(password[i]=='$' || password[i]=='!' || password[i]=='@' || password[i]=='#')
+        {
+            sym_count++;
+        }
     }
 
     if (num_count < 3)
     {
-        printf("At least 3 numbers are needed in the password. Try again.\n");
+        printf("At least 3 numbers are needed in the password. Returning to starting screen.\n\n");
         return false;
     }
     if (cap_count < 1)
     {
-        printf("At least 1 captial letter is needed. Try again.\n");
+        printf("At least 1 captial letter is needed. Returning to starting screen.\n\n");
         return false;
     }
     if (sym_count < 1)
     {
-        printf("At least 1 symbol is needed. Try again.\n");
+        printf("At least 1 symbol is needed ($, !, @, #). Returning to starting screen.\n\n");
         return false;
     }
 
@@ -57,7 +61,7 @@ void create_acc()
     char check_temp_pass[20];
     int temp_accNum;  
 
-    printf("Enter your name");
+    printf("Enter your name:\n");
     scanf("%s", temp_name);
 
 
@@ -65,18 +69,18 @@ void create_acc()
     {
         if (!isalpha(temp_name[i]))
         {
-            printf("Not valid name. Please enter characters only. Try again.\n");
+            printf("Not valid name. Please enter characters only. Returning to starting screen.\n\n");
             return;
         }
     }
 
 
-    printf("Enter your password");
+    printf("Enter your password:\n");
     scanf("%s", temp_pass);
 
-    if (strlen(temp_pass) > 8)
+    if (strlen(temp_pass) < 8)
     {
-        printf("Password should not be longer than 8 characters. Try again.\n");
+        printf("Password should not be less than 8 characters. Returning to starting screen.\n\n");
         return;
     }
 
@@ -87,26 +91,26 @@ void create_acc()
         return;
     }
 
-    printf("Re-enter your password.\n");
-    printf("%s", check_temp_pass);
+    printf("Re-enter your password:\n");
+    scanf("%s", check_temp_pass);
 
     if(strcmp(temp_pass, check_temp_pass) != 0)
     {
-        printf("Passwords do not match. Try again.\n");
+        printf("Passwords do not match. Returning to starting screen.\n\n");
         return;
     }
 
-    printf("Enter bank account number\n");
+    printf("Enter bank account number:\n");
     scanf("%d", &temp_accNum);
 
     if (temp_accNum < 8)
     {
-        printf("Invalid account number. Try again.\n");
+        printf("Invalid account number. Returning to starting screen.\n\n");
         return;
     }
     if (isalpha(temp_accNum))
     {
-        printf("Invalid account number. Try again.\n");
+        printf("Invalid account number. Returning to starting screen.\n\n");
         return;
     }
 
@@ -115,7 +119,7 @@ void create_acc()
     strncpy(p.passw, temp_pass, sizeof(p.passw)-1);
     p.account_num = temp_accNum;
 
-    printf("Name: %s\n Password: %s\n Account Number: %d\n", p.name, p.passw, p.account_num);
+    printf("\nName: %s\nPassword:%s\nAccount Number: %d\n\n", p.name, p.passw, p.account_num);
 }
 
 void starting_screen(bool* exit_program)
@@ -139,7 +143,7 @@ void starting_screen(bool* exit_program)
             *exit_program = true;
             return;
         default:
-            printf("Invalid choice. Must be 1 or 2.\n");
+            printf("Invalid choice. Must be 1 or 2.\nReturning to starting screen.\n\n");
             return;
     }
 
