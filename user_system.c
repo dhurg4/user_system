@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <dirent.h>
 
 
 struct account 
@@ -11,6 +12,40 @@ struct account
     char passw[20];
     int account_num;
 };
+
+int file_exists(char* filename)
+{
+    char dir_name[] = "users/";
+
+    DIR* dp;
+    struct dirent* entry;
+
+    dp=opendir(dir_name);
+
+    if(dp==NULL)
+    {
+        printf("\nDirectory doesn't exist or cannot be opened. Returning to homescreen\n\n");
+        return 1;
+    }
+
+    entry = readdir(dp);
+    while (entry != NULL)
+    {
+        if (strcmp((entry->d_name), ".")!= 0 || strcmp((entry->d_name), "..")!=0)
+            if(strcmp((entry->d_name), *filename))
+            {
+                printf("\nFile exists.\n\n");
+                return 0;
+            }
+            else
+            {
+                printf("\nFile does not exist.\n\n");
+                return -1;
+            }
+    }
+    closedir(dp);
+
+}
 
 void file_handling(int* account_number, struct account* p)
 {
@@ -25,6 +60,20 @@ void file_handling(int* account_number, struct account* p)
     strcat(filepath, ender); //concatenate
 
 
+    int exists = file_exists(&file_name);
+
+    switch (exists)
+    {
+        case 1:
+            return;
+        case 0:
+            printf("\nAn account with this account number exists. Please log in.\n\n");
+            return;
+        case -1:
+            printf("\nAccount is being created now.\n\n");
+            break;
+    }
+
     FILE* fp = fopen(filepath, "w");
 
     if(fp==NULL)
@@ -36,10 +85,34 @@ void file_handling(int* account_number, struct account* p)
 
     fprintf(fp, "Name: %s\nPassword: %s\nAccount Number: %d\n", p->name, p->passw, p->account_num);   
     fclose(fp); 
-    
- 
 }
 
+void log_in()
+{   
+    int account_number;
+
+    printf("\nPlease enter your account number here: \n");
+    scanf("%d", account_number);
+
+    char file_name[256];
+    sprintf(file_name, "%d", account_number);
+    int exists = file_exists(&file_name);
+
+    switch (exists)
+    {
+        case 1:
+            return;
+        case 0:
+            printf("\nAccount found.\n\n");
+            break;
+        case -1:
+            printf("\nAccount does not exist. Returning to starting screen where you may create an account or exit the program.\n\n");
+            return;
+    }
+
+
+    return;
+}
 
 bool password_checker(char* password)
 {
